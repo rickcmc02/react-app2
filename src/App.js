@@ -12,7 +12,7 @@ class App extends Component {
     super(props);
     this.max_content_id = 3;  // UI에 영향 없으므로 state로 렌더링하는 것이 비효율적
     this.state = {
-      mode:'read',
+      mode:'welcome',
       selected_content_id:2,
       subject:{title: 'WEB', sub:'World Wide Web!'},
       welcome:{title:'Welcome', desc:'Hello, React!!'},
@@ -101,9 +101,28 @@ class App extends Component {
           data={this.state.contents}
         ></TOC>
         <Control onChangeMode={function(_mode) {
-          this.setState({
-            mode:_mode
-          });
+          if(_mode === 'delete') {
+            if(window.confirm('Are you sure?')) {
+              var _contents = Array.from(this.state.contents);
+              var i = 0;
+              while(i < _contents.length) {
+                if(_contents[i].id === this.state.selected_content_id) {
+                  _contents.splice(i, 1);
+                  break;
+                }
+                i = i + 1;
+              }
+              this.setState({
+                mode:'welcome',
+                contents:_contents
+              });
+              alert('successfully deleted!');
+            }
+          } else {
+            this.setState({
+              mode:_mode
+            });
+          }
         }.bind(this)}></Control>
         {this.getContent()}
       </div>
